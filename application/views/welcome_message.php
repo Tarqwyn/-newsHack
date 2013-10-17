@@ -75,12 +75,11 @@
 
 		<?php 
 
-		echo form_open('Welcome/get_followers');
+		echo form_open('Welcome/tags');
 		echo form_input('username', 'Username');
-		echo ('<br/><p>Please Enter something that interests you:</p>');
 		//echo form_input('subject', 'Subject');
 		echo ('<br/>');
-		echo form_submit('submit', 'Get Followers');
+		echo form_submit('submit', 'Get Tags');
 		echo form_close();
 		?>
 

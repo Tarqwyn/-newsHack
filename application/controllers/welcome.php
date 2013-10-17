@@ -19,14 +19,20 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-
 		//$this->get_followers();
 		$this->load->view('welcome_message');
 		debug("hi");
-
 	}
 
-	public function get_followers()
+	public function tags() {
+		$followers = $this->get_followers();
+		//die(var_dump($followers));
+		$hashtags = $this->get_tags($followers);
+		$tags = $this->sanitize($hashtags);
+		return $tags;
+	}
+
+	private function get_followers()
 	{
 		
 		require_once APPPATH.'/libraries/TwitterAPIExchange.php';
@@ -57,10 +63,11 @@ class Welcome extends CI_Controller {
 
 		//debug($twitter);
 
-		$string = $twitter->setGetfield($getfield)
+		$followers = $twitter->setGetfield($getfield)
              ->buildOauth($url, $requestMethod)
              ->performRequest();
 		
+		return $followers;
 
 		// $string = json_decode($twitter->setGetfield($getfield)
 		// 	->buildOauth($url, $requestMethod)
@@ -68,7 +75,7 @@ class Welcome extends CI_Controller {
 
 		//$this->load->view('result');
 
-		debug($string);
+		//debug($string);
 
 		// echo "<pre>";
 		// print_r($string);
