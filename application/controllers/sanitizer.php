@@ -9,8 +9,7 @@ class Sanitizer {
 	}
 
 	public function remove_hashtags($string){
-	    return preg_replace('/#(?=[\w-]+)/', '', 
-	        preg_replace('/(?:#[\w-]+\s*)+$/', '', $string));
+		return str_replace('#', '', $string);
 	}
 
 	public function remove_camelcase($string){
