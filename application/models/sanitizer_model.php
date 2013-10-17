@@ -1,14 +1,20 @@
 <?php
 
-class Sanitizer {
+class Sanitizer_model extends CI_Model {
 
 	public function sanitize($input) {
 		// #BarrackObama -> BarrackObama
 		$input = $this->remove_hashtags($input);
 		// BarrackObama -> Barrack Obama
 		$input = $this->remove_camelcase($input);
+
+		$input = $input[0];
+
 		// remove trailing whitespace before/after string
-		$input = trim($input);
+		//$input = trim($input);
+
+		$input = str_replace('.', '', $input);
+		$input = strtolower($input);
 		return $input;
 	}
 

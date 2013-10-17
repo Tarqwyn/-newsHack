@@ -1,0 +1,96 @@
+
+  #body{
+    height: 0px;
+  }
+
+  #body p{
+    display: none;
+    color: #505050;
+    -webkit-transition: display 1s;
+  }
+
+  #body form{
+    display: none;
+    -webkit-transition: display 1s;
+  }
+  #body.open{
+    overflow-y: hidden;
+    height: 100px; /* approximate max height */
+    -webkit-transition: height 1s;
+  }
+
+  #body.open p{
+    display: block;
+  }
+
+  #body.open form{
+    display: block;
+  }
+  
+  p.footer{
+    text-align: right;
+    font-size: 11px;
+    border-top: 1px solid #D0D0D0;
+    line-height: 32px;
+    padding: 0 10px 0 10px;
+    margin: 20px 0 0 0;
+  }
+
+    h1.header {
+        -webkit-margin-before: 0em;
+        -webkit-margin-after: 0em;
+        color: #fff;
+        font-size: 1.35em;
+        background-color: #505050;
+        padding-top: 0.28em;
+        padding-bottom: 0.65em;
+        padding-left: 0.38em;
+        background-image: url('http://localhost:8888/newshack/www/css/img/chevron.png');
+        background-repeat: no-repeat;
+        background-position: 97% 3%;
+        border: 1px solid #D0D0D0;
+        border-bottom: 3px solid #ededed;
+   }
+   h1.open{
+      background-position: 97% 97%;
+   }
+
+
+.header{
+  padding: 8px;
+}
+.wrapper,
+.tweet,
+.headline{
+  display:none;
+  transition: display .25s ease-in-out;
+   -moz-transition: display .25s ease-in-out;
+   -webkit-transition: display .25s ease-in-out;
+}
+a:hover .wrapper {
+  display: block;
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  background: url('http://localhost:8888/newshack/www/css/img/8px_square.png');
+}
+
+a:hover .headline{
+  display: block;  
+  font-size: 24px;
+  color: #fff;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  position: absolute;
+}
+
+a:hover .tweet{
+  display: block;  
+  font-size: 24px;
+  color: #fff;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+}

@@ -1,0 +1,37 @@
+/* reset.css */
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, img, q, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {margin:0;padding:0;border:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline;list-style: none outside none;}
+body {line-height:1.5;}
+table {border-collapse:separate;border-spacing:0;}
+caption, th, td {text-align:left;font-weight:normal;}
+table, td, th {vertical-align:middle;}
+blockquote:before, blockquote:after, q:before, q:after {content:"";}
+blockquote, q {quotes:"" "";}
+a img {border:none;}
+
+
+body{
+font-family: Arial, Helmet, Freesans, sans-serif;
+color:#505050;
+font-size: 12px
+}
+
+html body h1.masthead{
+width: 100%;
+height: 48px;
+background: #990000;
+font-size: 2em;
+color: #fff;
+padding: 8px 8px 8px 8px;
+margin-bottom: 16px;
+}
+
+html body p.top-bottom{
+width: 100%;
+height: 24px;
+background: #303030;
+font-size: 1em;
+color: #fff;
+padding: 4px 4px 4px 4px;
+margin-top: 16px;
+clear:both;
+}
