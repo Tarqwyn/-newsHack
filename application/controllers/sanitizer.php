@@ -3,8 +3,12 @@
 class Sanitizer {
 
 	public function sanitize($input) {
+		// #BarrackObama -> BarrackObama
 		$input = $this->remove_hashtags($input);
+		// BarrackObama -> Barrack Obama
 		$input = $this->remove_camelcase($input);
+		// remove trailing whitespace before/after string
+		$input = trim($input);
 		return $input;
 	}
 

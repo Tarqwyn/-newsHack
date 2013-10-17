@@ -30,17 +30,25 @@ class Welcome extends CI_Controller {
 	}
 
 	public function tags() {
+		// get the twitter hook
 		$this->initialiseTwitter();
+		// get ids of who the user follows
 		$following = $this->get_following();
-		$tags = $this->get_tags($following);
-		return $tags;
+		// set the $tags array populated from this function
+		$this->get_tags($following);
+		// done
+		var_dump($this->tags);
+		return $this->tags;
 	}
 
 	private function initialiseTwitter() {
 
 		require_once APPPATH.'/libraries/TwitterAPIExchange.php';
  
-		/** Set access tokens here - see: https://dev.twitter.com/apps/ **/
+		/* 
+		 Set access tokens here - see: https://dev.twitter.com/apps/ 
+		 Switch between the two settings if we get a "too many requests" error.
+		*/
 		$settingsAndy = array(
 		    'oauth_access_token' => "301349916-vAfxpgV9Rk6N0O1NZ5eFzdf36iyhXefNvrCzKRzw",
 		    'oauth_access_token_secret' => "eml11egJ5yEnSf2ufXOHIXPpWWzSzuxbP3nbtSd8",
@@ -65,13 +73,13 @@ class Welcome extends CI_Controller {
 		$inputUserHandle = $this->input->post('username');
 		$getfield = '?id='.$inputUserHandle;
 
-		$followers = $this->twitter->setGetfield($getfield)
+		$following = $this->twitter->setGetfield($getfield)
              ->buildOauth($url, $requestMethod)
              ->performRequest();
 
-        $this->queryCheck($followers);
+        $this->queryCheck($following);
 
-		return $followers;
+		return $following;
 
 	}
 
@@ -108,28 +116,34 @@ class Welcome extends CI_Controller {
         	$this->queryCheck($tweets);
 			$tweets = json_decode($tweets, true);
 
-			// loop through tweets
+			// loop through tweets until we find a hashtag
 			foreach($tweets as $tweet) {
 
 				// check if tweet contains hashtag
 				if(count($tweet["entities"]["hashtags"]) > 0) {
 
-					// TODO - probably skipping over hashtags here.
+					// TODO - we're skipping over hashtags here.
 					// store hashtag in array
 					$hashtag = $tweet["entities"]["hashtags"][0]["text"];
 
 					// sanitize the tag
 					$sanitized = $sanitizer->sanitize($hashtag);
+					
 					// add to array
 					$this->add_tag($sanitized, $tweet["id"]);
+
+					// we've found our hashtag, so move on to another user we're following
+					break;
 				}
 			}
 
-			if(++$count > 5) {
+			if(++$count > 25) {
 				break;
 			}
 		}
-		die(var_dump($this->tags));
+
+		// we're done with our PHP, so turn back to JSON
+		$this->tags = json_encode($this->tags);
 	}
 
 	/**
