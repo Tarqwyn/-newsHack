@@ -1,5 +1,7 @@
 .DS_Store
-
+node_modules/
+tasks/*/*/css/*.css
+.sass-cache/
 application/cache/*
 !application/cache/index.html
 !application/cache/.htaccess
