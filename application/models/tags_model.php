@@ -5,8 +5,6 @@ class Tags_model extends CI_Model {
 
 	private $twitter;
 	private $tags = array();
-	// TODO - allow tags() to be called again and get NEXT "round" of hashtags
-	private $count;
 
 	public function tags($username) {
 		// get the twitter hook
@@ -97,6 +95,7 @@ class Tags_model extends CI_Model {
 			}
 		}
 
+		// make the requests for user's latest tweets
 		foreach($queries as $userIDs) {
 			// get user's latest tweets
 			$url = "https://api.twitter.com/1.1/users/lookup.json";
@@ -109,16 +108,16 @@ class Tags_model extends CI_Model {
 			$tweets = json_decode($tweets, true);
 
 			foreach($tweets as $tweet) {
-
+				// get tweet ID, status, and hashtags
 				$tweetID = @$tweet["id"];
 				$tweetStatus = @$tweet["status"]["text"];
 				preg_match_all('/#[^\s]*/i', $tweetStatus, $hashtags);
 
+				// if tweet has hashtag(s), add to array
 				if(count($hashtags[0]) > 0) {
 					foreach($hashtags as $hashtag) {
 						// sanitize the tag
 						$sanitized = $this->sanitizer_model->sanitize($hashtag);
-						
 						// add to array
 						$this->add_tag($sanitized, $tweetID);
 					}
@@ -127,6 +126,7 @@ class Tags_model extends CI_Model {
 		}
 
 		// sort into trending order, if any
+		// TODO - move this out into a function
 		$temp = $this->tags;
 		$sortedArray = array();
 
@@ -148,10 +148,8 @@ class Tags_model extends CI_Model {
 			$index = array("tag" => "", "ids" => array());
 		}
 
-		var_dump($sortedArray);
-		die();
-
-		$this->tags = json_encode($this->tags);
+		// update private tags array with the sorted array
+		$this->tags = json_encode($sortedArray);
 	}
 
 	/**
