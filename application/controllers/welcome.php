@@ -2,6 +2,8 @@
 
 class Welcome extends CI_Controller {
 
+	private $twitter;
+
 	/**
 	 * Index Page for this controller.
 	 *
@@ -17,24 +19,22 @@ class Welcome extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
-	public function index()
-	{
+	public function index() {
 		//$this->get_followers();
 		$this->load->view('welcome_message');
 		debug("hi");
 	}
 
 	public function tags() {
-		$followers = $this->get_followers();
-		//die(var_dump($followers));
-		$hashtags = $this->get_tags($followers);
-		$tags = $this->sanitize($hashtags);
+		$this->initialiseTwitter();
+
+		$following = $this->get_following();
+		$tags = $this->get_tags($following);
 		return $tags;
 	}
 
-	private function get_followers()
-	{
-		
+	private function initialiseTwitter() {
+
 		require_once APPPATH.'/libraries/TwitterAPIExchange.php';
  
 		/** Set access tokens here - see: https://dev.twitter.com/apps/ **/
@@ -45,44 +45,70 @@ class Welcome extends CI_Controller {
 		    'consumer_secret' => "WdN71hErcn50JhHAYFTKQ5RmyhyRM34vhZWcbDDQ"
 		);
 
+		$this->twitter = new TwitterAPIExchange($settings);
+	}
+
+	private function get_following() {
+
 		$requestMethod = "GET";
-		//$url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
-		//$url = "https://api.twitter.com/1.1/statuses/home_timeline.json";
-		//$url = "https://api.twitter.com/1.1/search/tweets.json";
 		$url = "https://api.twitter.com/1.1/friends/ids.json";
 		
-		//$getfield = '?screen_name=leimdorfer&count=20';
-		//$getfield = '?q=Tottenham';
 		$inputUserHandle = $this->input->post('username');
 		$getfield = '?id='.$inputUserHandle;
-		//'+$inputUserHandle;
 
-		$twitter = new TwitterAPIExchange($settings);
-		//var_dump($twitter);
-		//exit();
-
-		//debug($twitter);
-
-		$followers = $twitter->setGetfield($getfield)
+		$followers = $this->twitter->setGetfield($getfield)
              ->buildOauth($url, $requestMethod)
              ->performRequest();
-		
+
 		return $followers;
-
-		// $string = json_decode($twitter->setGetfield($getfield)
-		// 	->buildOauth($url, $requestMethod)
-		// 	->performRequest(),$assoc = TRUE);
-
-		//$this->load->view('result');
-
-		//debug($string);
-
-		// echo "<pre>";
-		// print_r($string);
-		// echo "</pre>";
 
 	}
 
+	private function get_tags($following) {
+
+		$tags = array();
+
+		$following = json_decode($following, true);
+		$following = $following["ids"];
+
+		foreach($following as $userID) {
+			$url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
+			$getfield = '?include_entities=true&user_id='.$userID;
+
+			// get user's latest tweet
+			$tweet = $this->twitter->setGetfield($getfield)
+			->buildOauth($url, "GET")
+			->performRequest();
+
+			// look for hashtags
+			$tweets = json_decode($tweet, true);
+
+			foreach($tweets as $tweet) {
+				var_dump($tweet);
+				die();
+
+				// add hashtags to array
+				if(count($tweet["entities"]["hashtags"]) > 0) {
+					foreach($tweet["entities"]["hashtags"] as $hashtag) {
+
+						$sanitized = $hashtag;//sanitize($hashtag);
+						$tag = array(
+							"id" => $tweet["id"],
+							"tag" => $sanitized
+						);
+						array_push($tags, $tag);
+					}
+				}
+			}
+		}
+
+		if(count($tags) >= 1) {
+			var_dump($tags);
+			die();
+		} else {
+			die("no hashtags");
+		}
+	}
 
 }
 
