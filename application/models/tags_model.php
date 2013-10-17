@@ -5,6 +5,8 @@ class Tags_model extends CI_Model {
 
 	private $twitter;
 	private $tags = array();
+	// TODO - allow tags() to be called again and get NEXT "round" of hashtags
+	private $count;
 
 	public function tags($username) {
 		// get the twitter hook
@@ -65,11 +67,16 @@ class Tags_model extends CI_Model {
 	 */
 	private function queryCheck($output) {
 		if($output == '{"errors":[{"message":"Rate limit exceeded","code":88}]}') {
-			die("Request limit reached. Please wait a few minutes.");
+			die("Request limit reached. Please switch to other authorisation details, or wait a few minutes.");
 		}
 	}
 
-
+	/**
+	 * Gets the latest tweet from every single person the user follows. Scans those tweets
+	 * for hashtags. Returns to 
+	 *
+	 *
+	 */
 	private function get_tags($following) {
 		// convert json data to associative array
 		$following = json_decode($following, true);
@@ -78,46 +85,72 @@ class Tags_model extends CI_Model {
 		// prepare sanitizer for converting hashtags to keywords
 		$this->load->model("sanitizer_model");
 
-		// loop through each person the user is following
-		$count = 0;
-		foreach($following as $userID) {
-
-			// get user's latest tweets
-			$url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
-			$getfield = '?include_entities=true&user_id='.$userID;
-			$tweets = $this->twitter->setGetfield($getfield)
-			->buildOauth($url, "GET")
-			->performRequest();
-        	$this->queryCheck($tweets);
-			$tweets = json_decode($tweets, true);
-
-			// loop through tweets until we find a hashtag
-			foreach($tweets as $tweet) {
-
-				// check if tweet contains hashtag
-				if(count($tweet["entities"]["hashtags"]) > 0) {
-
-					// TODO - we're skipping over hashtags here.
-					// store hashtag in array
-					$hashtag = $tweet["entities"]["hashtags"][0]["text"];
-
-					// sanitize the tag
-					$sanitized = $this->sanitizer_model->sanitize($hashtag);
-					
-					// add to array
-					$this->add_tag($sanitized, $tweet["id"]);
-
-					// we've found our hashtag, so move on to another user we're following
-					break;
-				}
-			}
-
-			if(++$count > 25) {
-				break;
+		// limit to 100 users per request
+		$queries = array();
+		$index = 0;
+		for($i = 0; $i < count($following); $i++) {
+			if($i == 0 || ($i % 100 == 0) ) {
+				if($i > 0) { $index++; }
+				$queries[$index] = $following[$i];
+			} else {
+				$queries[$index] = $queries[$index] . "," . $following[$i]; 
 			}
 		}
 
-		// we're done with our PHP, so turn back to JSON
+		foreach($queries as $userIDs) {
+			// get user's latest tweets
+			$url = "https://api.twitter.com/1.1/users/lookup.json";
+			$getfield = '?include_entities=true&user_id='.$userIDs;
+
+			$tweets = $this->twitter->setGetfield($getfield)
+			->buildOauth($url, "GET")
+			->performRequest();
+	    	$this->queryCheck($tweets);
+			$tweets = json_decode($tweets, true);
+
+			foreach($tweets as $tweet) {
+
+				$tweetID = @$tweet["id"];
+				$tweetStatus = @$tweet["status"]["text"];
+				preg_match_all('/#[^\s]*/i', $tweetStatus, $hashtags);
+
+				if(count($hashtags[0]) > 0) {
+					foreach($hashtags as $hashtag) {
+						// sanitize the tag
+						$sanitized = $this->sanitizer_model->sanitize($hashtag);
+						
+						// add to array
+						$this->add_tag($sanitized, $tweetID);
+					}
+				}
+			}
+		}
+
+		// sort into trending order, if any
+		$temp = $this->tags;
+		$sortedArray = array();
+
+		for($j = 0; $j < count($temp); $j++) {
+			$mostSoFar = 0; 
+			$index = 0;
+			for($i = 0; $i < count($temp); $i++) {
+				$count = count($temp[$i]["ids"]);
+
+				if($count > $mostSoFar) {
+					$mostSoFar = $count;
+					$index = &$temp[$i];
+				}
+			}
+
+			// add highest so far to sorted array
+			array_push($sortedArray, $index);
+			// remove from old array
+			$index = array("tag" => "", "ids" => array());
+		}
+
+		var_dump($sortedArray);
+		die();
+
 		$this->tags = json_encode($this->tags);
 	}
 
@@ -143,10 +176,14 @@ class Tags_model extends CI_Model {
 
 		// loop through existing tags
 		$added = false;
-		foreach($this->tags as $tag) {
+		for($i = 0; $i < count($this->tags); $i++) {
 			// if we have this tag already
-			if($tag["tag"] == $tagToAdd) {
-				$tag["ids"][] = $idToAdd;
+			if($this->tags[$i]["tag"] === $tagToAdd) {
+
+				// add tweet id to array
+				$count = count($this->tags[$i]["ids"]);
+				$this->tags[$i]["ids"][$count] = $idToAdd;
+
 				$added = true;
 				break;
 			}
