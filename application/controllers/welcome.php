@@ -25,12 +25,17 @@ class Welcome extends CI_Controller {
 	}
 
 	public function tags() {
-		$followers = $this->get_followers();
-		//die(var_dump($followers));
-		$hashtags = $this->get_tags($followers);
-		$tags = $this->sanitize($hashtags);
+		// $followers = $this->get_followers();
+		// //die(var_dump($followers));
+		// $hashtags = $this->get_tags($followers);
+		// $tags = $this->sanitize($hashtags);
+
+		$tags = $this->extract_tags();
+
+
 		return $tags;
 	}
+
 
 	private function get_followers()
 	{
