@@ -65,6 +65,8 @@ class Welcome extends CI_Controller {
 	}
 
 	private function get_tags($following) {
+		require("sanitizer.php");
+		$sanitizer = new Sanitizer();
 
 		$tags = array();
 
@@ -84,14 +86,11 @@ class Welcome extends CI_Controller {
 			$tweets = json_decode($tweet, true);
 
 			foreach($tweets as $tweet) {
-				var_dump($tweet);
-				die();
-
 				// add hashtags to array
 				if(count($tweet["entities"]["hashtags"]) > 0) {
 					foreach($tweet["entities"]["hashtags"] as $hashtag) {
 
-						$sanitized = $hashtag;//sanitize($hashtag);
+						$sanitized = $sanitizer->sanitize($hashtag);
 						$tag = array(
 							"id" => $tweet["id"],
 							"tag" => $sanitized
@@ -100,13 +99,14 @@ class Welcome extends CI_Controller {
 					}
 				}
 			}
-		}
 
-		if(count($tags) >= 1) {
-			var_dump($tags);
-			die();
-		} else {
-			die("no hashtags");
+			if(count($tags) >= 1) {
+				var_dump($tags);
+				die("we have tags");
+			} else {
+				die("no hashtags");
+			}
+
 		}
 	}
 

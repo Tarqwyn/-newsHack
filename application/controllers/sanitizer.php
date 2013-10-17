@@ -2,6 +2,12 @@
 
 class Sanitizer {
 
+	public function sanitize($input) {
+		$input = $this->remove_hashtags($input);
+		$input = $this->remove_camelcase($input);
+		return $input;
+	}
+
 	public function remove_hashtags($string){
 	    return preg_replace('/#(?=[\w-]+)/', '', 
 	        preg_replace('/(?:#[\w-]+\s*)+$/', '', $string));
