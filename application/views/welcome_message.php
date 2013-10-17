@@ -18,7 +18,7 @@
 
 			<?php 
 
-			echo form_open('Welcome/tags');
+			echo form_open('Welcome/news');
 			echo form_input('username', 'Username');
 			echo (': ');
 			echo form_submit('submit', 'Go');

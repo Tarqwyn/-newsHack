@@ -1,6 +1,6 @@
 <?php
 
-class Sanitizer {
+class Sanitizer_model extends CI_Model {
 
 	public function sanitize($input) {
 		// #BarrackObama -> BarrackObama
