@@ -5,12 +5,12 @@
 	<title>My News View</title>
 
 	<base href="<?php echo $this->config->item('base_url') ?>www/" />
-	<link rel="stylesheet" href="css/newshack.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="http://localhost:8888/www/css/newshack.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="http://localhost:8888/www/css/style.css" type="text/css" media="screen" />
 
 </head>
 <body class="demos ">
-	<div id="container">
+	<div id="outer">
 		<h1>My News View</h1>
 
 		<div id="body">
@@ -33,10 +33,6 @@
   <section id="content">
     
       <h1>Images</h1>
-
-      <section id="copy">
-    <p>Isotope is triggered after all images are loaded with the <a href="../docs/help.html#imagesloaded_plugin"><code>imagesLoaded</code> plugin</a>. </p>
-  </section>
 
   <div id="container" class="photos clearfix">
     
@@ -78,8 +74,8 @@
     
   </div> <!-- #container -->
   
-  <script src="js/jquery-1.7.1.min.js"></script>
-  <script src="js/jquery.isotope.min.js"></script>
+  <script src="http://localhost:8888/www/js/jquery-1.7.1.min.js"></script>
+  <script src="http://localhost:8888/www/js/jquery.isotope.min.js"></script>
   <script>
     $(function(){
 
@@ -95,9 +91,6 @@
     });
   </script>
     
-    <footer>
-      Isotope by <a href="http://desandro.com">David DeSandro</a> / <a href="http://metafizzy.co">Metafizzy</a>
-    </footer>
     
   </section> <!-- #content -->
   
