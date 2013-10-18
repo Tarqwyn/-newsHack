@@ -80,8 +80,14 @@ a:hover .headline{
   font-weight: bold;
   line-height: 32px;
   max-width: 256px;
-  max-height: 32px;
-  overflow: hidden;
+  height: 32px;
+  overflow-y: hidden;
+  padding-bottom: 0px;
+
+}
+
+a:hover .headline:after{
+  content:"...";
 }
 
 a:hover .tweet{
@@ -93,9 +99,11 @@ a:hover .tweet{
   padding: 8px;
   background: url('http://localhost:8888/newshack/www/css/img/twitter_icon.png');
   background-repeat: no-repeat;
-  background-position: 20% 40%;
-  max-width: 244px;
-  padding-left: 76px;
+  background-position: 10% 40%;
+  max-width: 240px;
+  padding-left: 77px;
+  height: 83px;
+  overflow-y: hidden;
 }
 
 .tweets{
