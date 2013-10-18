@@ -42,15 +42,19 @@
       echo '<div id="container" class="photos clearfix">';
 
       $news = json_decode($_POST['news'], true);
-      foreach($news as $story) {
-        echo '<div class="photo">';
-          echo '<a href="' . $story['url'] . '" title="' . $story['headline'] . '"><img src="' . $story['img'] . '" alt="' . $story['headline'] . '" />';
-            echo '<div class="wrapper">';
-              echo '<span class="headline">' . $story['headline'] . '</span>';
-              foreach($story['tweets'] as $tweetID) {
-                echo '<span class="tweet">' . $tweetID . '</span>';
-              }
-        echo '</div></a></div>';
+
+      for($i = 0; $i < 3; $i++) {
+
+        foreach($news as $story) {
+          echo '<div class="photo">';
+            echo '<a href="' . $story['url'] . '" title="' . $story['headline'] . '"><img src="' . $story['img'] . '" alt="' . $story['headline'] . '" />';
+              echo '<div class="wrapper">';
+                echo '<span class="headline">' . $story['headline'] . '</span>';
+                foreach($story['tweets'] as $tweetID) {
+                  echo '<span class="tweet">' . $tweetID . '</span>';
+                }
+          echo '</div></a></div>';
+        }
       }
 
       echo '</div>';
