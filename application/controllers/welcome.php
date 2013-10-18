@@ -17,17 +17,37 @@ class Welcome extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
-	public function index() {
-		//$this->get_followers();
+	public function index($news) {
+		/*
+			$news needs to have the following JSON format:
+
+			news = array(
+				array(
+					"headline" => "headline",
+					"img" => "img",
+					"url" => "url",
+					"tweets" => array(1,2,3,4),
+				),
+				array(
+					"headline" => "headline",
+					"img" => "img",
+					"url" => "url",
+					"tweets" => array(1,2,3,4),
+				)
+			);
+		*/
+		$_POST["news"] = $news;
 		$this->load->view('welcome_message');
-		debug("hi");
 	}
 
 	public function news() {
+		// get search terms based on who user follows
 		$this->load->model("tags_model");
 		$tags = $this->tags_model->tags($this->input->post('username'));
-		var_dump($tags);
-		die("end");
+		// convert search terms to news articles
+		$news = $this->juicer_model->convert($tags);
+		// display results
+		$this->index($news);
 	}
 }
 
