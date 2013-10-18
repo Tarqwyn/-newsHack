@@ -20,7 +20,7 @@
 		<div id="user-cta">
 			<?php 
       $attributes = array('class' => 'form_input');
-			echo form_open('Welcome/tags', $attributes);
+			echo form_open('Welcome/news', $attributes);
 			echo form_input('username', 'your Twitter ID:');
 			echo (': ');
 			echo form_submit('submit', 'Go');
@@ -47,17 +47,18 @@
             echo '<a href="' . $story['url'] . '" title="' . $story['headline'] . '"><img src="' . $story['img'] . '" alt="' . $story['headline'] . '" />';
               echo '<div class="wrapper">';
                 echo '<span class="headline">' . $story['headline'] . '</span>';
+                echo '<span class="tweets">';
                 foreach($story['tweets'] as $tweetID) {
-                  echo '<span class="tweet">' . $tweetID . '</span>';
+                  echo '<p class="tweet">' . $tweetID . '</p>';
                 }
-          echo '</div></a></div>';
+          echo '</span></div></a></div>';
         }
       }
 
       echo '</div>';
     }
     ?>
-
+<!--
 <div id="container" class="photos clearfix">
       <div class="photo">
         <a href="http://www.flickr.com/photos/nemoorange/5013039951/" title="Stanley by Dave DeSandro, on Flickr"><img src="http://farm5.static.flickr.com/4113/5013039951_3a47ccd509.jpg" alt="Stanley" />
@@ -292,7 +293,7 @@
       </div>
   
   </div> 
-    
+    -->
 <script type="text/javascript" src="http://localhost:8888/newshack/www/js/main.js"></script>
 </section> <!-- #content -->
   
