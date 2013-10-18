@@ -1,5 +1,7 @@
 <?php
 
+//http://localhost:8888/newshack/index.php/Welcome/news
+
 class Juicer_model extends CI_Model {
 
 	function validate_hash_tag() {
@@ -22,7 +24,7 @@ class Juicer_model extends CI_Model {
 			//echo gettype($data);
 			
 			//Convert string into array
-			$obj = json_decode($data);
+			$obj = json_decode($data, true);
 			//var_dump($obj[3]); //All the URI's
 			$arr = $obj[3];
 
@@ -34,7 +36,7 @@ class Juicer_model extends CI_Model {
 				
 				array_push($uriArr,$uri);
 
-				echo $uri . "<hr />";
+				//echo $uri . "<hr />";
 			}
 		}
 		
@@ -58,30 +60,40 @@ class Juicer_model extends CI_Model {
 		//Using the data from the SPARQL feed get the article content 
 		//var_dump($uri);
 
-		//echo count($uri) . " COUNT ";
+		echo count($uri) . " COUNT ";
 
 		foreach ($uri as $key => $value) {
 			# code...
-			echo  '<br />' . $value;
-
+			echo $value . "<br />";
 
 			//$url = 'http://bbc.api.mashery.com/juicer-ld-api/articles.json?binding=url&limit=5&where=?url cwork:tag <'.$value.'>.?url cwork:primaryFormat cwork:VideoFormat. ?url bbc:product bbc:NewsWeb.&api_key=pe83xdg9cbbbkbjzwu5k9hhc';
 
-			$url = "http://bbc.api.mashery.com/juicer-ld-api/articles.json?binding=url&limit=5&where=?thing%20rdf:type%20<http://dbpedia.org/ontology/Company>%20.%20?thing%20<http://dbpedia.org/ontology/industry>%20<http://dbpedia.org/resource/Aerospace>%20.%20?url%20cwork:tag%20?thing%20.&api_key=pe83xdg9cbbbkbjzwu5k9hhc";
+			//$url = "http://bbc.api.mashery.com/juicer-ld-api/articles.json?binding=url&limit=5&where=" . urlencode("?url cwork:tag <http://dbpedia.org/resource/Barack_Obama>") . "&api_key=pe83xdg9cbbbkbjzwu5k9hhc";
+
+			$urlEncoded = urlencode($value);
+
+			$url = "http://bbc.api.mashery.com/juicer-ld-api/articles.json?binding=url&limit=5&where=" . urlencode("?url cwork:tag <" . $value .">") . "&api_key=pe83xdg9cbbbkbjzwu5k9hhc";
 
 			$data = @file_get_contents($url, false);
 
-			//echo $data . "<br /><br />";
+			echo $data . "<br /><br />";
 			//echo gettype($data);
-			
-			//Convert string into array
-			//$obj = json_decode($data);
-			//var_dump($obj); //
+			$obj = json_decode($data, true);
 
-			//echo count($obj["articles"]) . " COUNT <br />";
+			//echo count($obj["articles"]) . ' HOW BIG';
 
-			//echo '<hr />' . $obj[$key] . "<hr />";
+			echo "TITLE = " . $obj["articles"][0]["title"] . "<br />";
+			echo "URL = " . $obj["articles"][0]["url"] . "<br />";
+			$img = $obj["articles"][0]["image"];
+			echo "IMG SRC = " . $img["src"]. "<br />";
 
+			$array = array(
+				"title" 	=> $obj["articles"][0]["title"],
+				"url" 		=> $obj["articles"][0]["url"],
+				"img_src" 	=> $img["src"]
+			);
+			 
+			$articles = (object) $array;
 		}
 	} 
 }
