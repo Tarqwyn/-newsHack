@@ -4,96 +4,145 @@
 
 class Juicer_model extends CI_Model {
 
-	function validate_hash_tag() {
+	public function validate_hash_tag($jsonFeed) {
 
-		$jsonFeed = json_decode('[{"tag":"cssmasking","ids":[388596909650493440]},{"tag":"B BC Mars","ids":[360027773592539136]},{"tag":"nails","ids":[390792882854305792]},{"tag":"miltoncourt","ids":[390585317348376576]},{"tag":"Delo","ids":[374840201329139712]},{"tag":"joker","ids":[386191862157299712]},{"tag":"Android Design","ids":[388356521400467456]},{"tag":"twat","ids":[253932001915183104]},{"tag":"strictly","ids":[390858130516897792]},{"tag":"spacegeeks","ids":[367213090376806400]},{"tag":"data","ids":[390781507943804928]},{"tag":"minorannoyances","ids":[382927844315504640]},{"tag":"royalbabygift","ids":[355356168895471617]},{"tag":"sigh","ids":[390494917195079682]},{"tag":"yahoohack","ids":[328137007727517696]},{"tag":"job","ids":[388603141387583488]},{"tag":"Sydenham","ids":[388239326397874176]},{"tag":"newsrw","ids":[388275304583933952]},{"tag":"mozfest","ids":[390074782995075072]},{"tag":"mcflythemusical","ids":[390798778992963585]},{"tag":"Thug Life","ids":[389843244487413760]},{"tag":"poetrylives","ids":[388630126944321538]},{"tag":"newsHACK","ids":[390835151015804929]},{"tag":"Stars","ids":[388989832737087488]},{"tag":"dudley","ids":[354313175967076354]},{"tag":"Barack Obama","ids":[354313175967076300]}]', true);
+		$jsonFeed = json_decode($jsonFeed, true);
 
 		$uriArr = array();
 
-		//die('test die');
-		//var_dump($jsonFeed);
 		foreach($jsonFeed as $tag){
-			//echo $tag;
-			//var_dump($tag);
 
-			$url = 'http://bbc.api.mashery.com/juicer-ld-api/concepts/tagged?q=' . $tag["tag"] .'&limit=20&api_key=pe83xdg9cbbbkbjzwu5k9hhc';
+			$url = 'http://bbc.api.mashery.com/juicer-ld-api/concepts/tagged?q=' . urlencode($tag["tag"]) .'&limit=20&api_key=pe83xdg9cbbbkbjzwu5k9hhc';
 
-			$data = @file_get_contents($url, false);
+			//$data = @file_get_contents($url, false);
 
-			//echo $data . "<br /><br />";
-			//echo gettype($data);
-			
+			$ch = curl_init();
+			$timeout = 5;
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+			$data = curl_exec($ch);
+			curl_close($ch);
+
 			//Convert string into array
 			$obj = json_decode($data, true);
-			//var_dump($obj[3]); //All the URI's
 			$arr = $obj[3];
 
-			if($arr[0] != ''){
-				//echo $arr[0] . ' POS';
-				//echo gettype($arr) . '... THE TYPE';
-	
-				$uri = $arr[0];
-				
-				array_push($uriArr,$uri);
+			/*
+			echo $url . ": ";
+			var_dump($data);
+			echo "<br />";
+			*/
 
-				//echo $uri . "<hr />";
+			// 0.5 secs
+			usleep(500000);
+
+			if($arr[0] != ''){
+
+				$uri = $arr[0];
+
+				$element = array("uri" => $uri, "tweets" => $tag['ids']);
+				
+				array_push($uriArr,$element);
+			}
+
+			if(count($uriArr) >= 15) {
+				break;
 			}
 		}
-		
-		//Using Find Tagged Concepts 
-		//Search the API for the tag - bbc.api.mashery.com/juicer-ld-api/concepts/tagged?q=roone&limit=20&api_key=pe83xdg9cbbbkbjzwu5k9hhc
-		//If results from the tagged contents is found 
-			//Extract the URI from the third array, pos [2] use first URI?!
-			//Get the article content from - Find articles using SPARQL API feed 
-		//Else 
-			// Return no results found	
 
-
-					
-		$this->get_articles_SPARQL($uriArr);
+		$articles = $this->get_articles_SPARQL($uriArr);
+		return $articles;
 	}
 
 	function get_articles_SPARQL($uri){
 
-		//API URL example - http://bbc.api.mashery.com/juicer-ld-api/articles.json?binding=url&limit=5&where=?url cwork:tag <http://dbpedia.org/resource/Barack_Obama>.?url cwork:primaryFormat cwork:VideoFormat. ?url bbc:product bbc:NewsWeb.&api_key=pe83xdg9cbbbkbjzwu5k9hhc
+		$articles = array();
 
-		//Using the data from the SPARQL feed get the article content 
-		//var_dump($uri);
 
-		echo count($uri) . " COUNT ";
+		//echo "Should loop " . count($uri) . " times. <br />";
 
-		foreach ($uri as $key => $value) {
-			# code...
-			echo $value . "<br />";
+		foreach ($uri as $element) {
 
-			//$url = 'http://bbc.api.mashery.com/juicer-ld-api/articles.json?binding=url&limit=5&where=?url cwork:tag <'.$value.'>.?url cwork:primaryFormat cwork:VideoFormat. ?url bbc:product bbc:NewsWeb.&api_key=pe83xdg9cbbbkbjzwu5k9hhc';
-
-			//$url = "http://bbc.api.mashery.com/juicer-ld-api/articles.json?binding=url&limit=5&where=" . urlencode("?url cwork:tag <http://dbpedia.org/resource/Barack_Obama>") . "&api_key=pe83xdg9cbbbkbjzwu5k9hhc";
-
-			$urlEncoded = urlencode($value);
+			$value = $element['uri'];
+			$tweets = $element['tweets'];
 
 			$url = "http://bbc.api.mashery.com/juicer-ld-api/articles.json?binding=url&limit=5&where=" . urlencode("?url cwork:tag <" . $value .">") . "&api_key=pe83xdg9cbbbkbjzwu5k9hhc";
 
-			$data = @file_get_contents($url, false);
+			//$data = @file_get_contents($url, false);
 
-			echo $data . "<br /><br />";
+			$ch = curl_init();
+			$timeout = 5;
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+			$data = curl_exec($ch);
+			curl_close($ch);
+
+			//echo $data . "<br /><br />";
 			//echo gettype($data);
 			$obj = json_decode($data, true);
+			
+			/*
+			echo "Raw data: ".htmlspecialchars($data) . " <br />";
+			echo "<br />";
+			echo "JSON: ".$obj;
+			*/
+
+			//echo "<br />OBJECT: <br />";
+			//var_dump($obj);
+
 
 			//echo count($obj["articles"]) . ' HOW BIG';
 
-			echo "TITLE = " . $obj["articles"][0]["title"] . "<br />";
-			echo "URL = " . $obj["articles"][0]["url"] . "<br />";
-			$img = $obj["articles"][0]["image"];
-			echo "IMG SRC = " . $img["src"]. "<br />";
+			//echo "TITLE = " . $obj["articles"][0]["title"] . "<br />";
+			//echo "URL = " . $obj["articles"][0]["url"] . "<br />";
 
-			$array = array(
-				"title" 	=> $obj["articles"][0]["title"],
-				"url" 		=> $obj["articles"][0]["url"],
-				"img_src" 	=> $img["src"]
-			);
-			 
-			$articles = (object) $array;
+
+			// 0.5 secs
+			usleep(500000);
+
+			if($obj != '') {
+				$img = $obj["articles"][0]["image"];
+				//echo "IMG SRC = " . $img["src"]. "<br />";
+
+
+				if(strpos($img['src'], "bbc.co.uk") !== false) {
+					$img['src'] = str_replace("bbc.co.uk", "bbcimg.co.uk", $img['src']);
+
+					$tagOne = ".co.uk/";
+					$tagTwo = "/images";
+					$replacement = "media";
+
+					$text = $img['src'];
+
+					$startTagPos = strrpos($text, $tagOne);
+					$endTagPos = strrpos($text, $tagTwo);
+					$tagLength = $endTagPos - $startTagPos + 1;
+
+					$newText = substr_replace($text, $replacement, 
+					    $startTagPos, $tagLength);
+
+					$img['src'] = $newText;
+					$img['src'] = str_replace("bbcimgmedia", "bbcimg.co.uk/media/", $img['src']);
+				}
+
+				//$tweets = array(1,2,3);
+				$array = array(
+					"headline" 	=> $obj["articles"][0]["title"],
+					"url" 		=> $obj["articles"][0]["url"],
+					"img" 		=> $img["src"],
+					"tweets"	=> $tweets
+				);
+				 
+				array_push($articles, $array);
+			}
 		}
+/*
+		var_dump($uri);
+		echo "<br /><br /><br />";
+		var_dump($articles);
+		*/
+		return json_encode($articles);
 	} 
 }

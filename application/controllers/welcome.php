@@ -49,7 +49,8 @@ class Welcome extends CI_Controller {
 		$this->load->model("tags_model");
 		$tags = $this->tags_model->tags($this->input->post('username'));
 		// convert search terms to news articles
-		//$this->news = $this->juicer_model->convert($tags);
+		$this->load->model("juicer_model");
+		$this->news = $this->juicer_model->validate_hash_tag($tags);
 		// display results
 		$this->index();
 	}
