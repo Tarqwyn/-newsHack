@@ -51,13 +51,13 @@
               foreach($story['tweets'] as $tweetID) {
                 echo '<span class="tweet">' . $story['tweet'] . '</span>';
               }
-        echo '</div></a></div>'
+        echo '</div></a></div>';
       }
 
       echo '</div>';
     }
     ?>
-    
+
 <!--
       <div class="photo">
         <a href="http://www.flickr.com/photos/nemoorange/5013039951/" title="Stanley by Dave DeSandro, on Flickr"><img src="http://farm5.static.flickr.com/4113/5013039951_3a47ccd509.jpg" alt="Stanley" />

@@ -2,6 +2,8 @@
 
 class Welcome extends CI_Controller {
 
+	private $news;
+
 	/**
 	 * Index Page for this controller.
 	 *
@@ -17,7 +19,7 @@ class Welcome extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
-	public function index($news) {
+	public function index() {
 		/*
 			$news needs to have the following JSON format:
 
@@ -36,7 +38,9 @@ class Welcome extends CI_Controller {
 				)
 			);
 		*/
-		$_POST["news"] = $news;
+		if(isset($this->news)) {
+			$_POST["news"] = $this->news;
+		}
 		$this->load->view('welcome_message');
 	}
 
@@ -45,9 +49,9 @@ class Welcome extends CI_Controller {
 		$this->load->model("tags_model");
 		$tags = $this->tags_model->tags($this->input->post('username'));
 		// convert search terms to news articles
-		$news = $this->juicer_model->convert($tags);
+		//$this->news = $this->juicer_model->convert($tags);
 		// display results
-		$this->index($news);
+		$this->index();
 	}
 }
 
