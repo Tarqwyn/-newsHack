@@ -68,11 +68,14 @@ class Juicer_model extends CI_Model {
 
 			//$url = 'http://bbc.api.mashery.com/juicer-ld-api/articles.json?binding=url&limit=5&where=?url cwork:tag <'.$value.'>.?url cwork:primaryFormat cwork:VideoFormat. ?url bbc:product bbc:NewsWeb.&api_key=pe83xdg9cbbbkbjzwu5k9hhc';
 
+			//$url = "http://bbc.api.mashery.com/juicer-ld-api/articles.json?binding=url&limit=5&where="
+			//. urlencode("?url cwork:tag <" . $value . ">.?url cwork:primaryFormat cwork:VideoFormat. ?url bbc:product bbc:NewsWeb.") . "&api_key=pe83xdg9cbbbkbjzwu5k9hhc";  //VIDEO DOESN'T WORK
+
 			//$url = "http://bbc.api.mashery.com/juicer-ld-api/articles.json?binding=url&limit=5&where=" . urlencode("?url cwork:tag <http://dbpedia.org/resource/Barack_Obama>") . "&api_key=pe83xdg9cbbbkbjzwu5k9hhc";
 
-			$urlEncoded = urlencode($value);
+			$url = "http://bbc.api.mashery.com/juicer-ld-api/articles.json?binding=url&limit=5&where=" . urlencode("?url cwork:tag <" . $value .">") . "&api_key=pe83xdg9cbbbkbjzwu5k9hhc"; //WORKS
 
-			$url = "http://bbc.api.mashery.com/juicer-ld-api/articles.json?binding=url&limit=5&where=" . urlencode("?url cwork:tag <" . $value .">") . "&api_key=pe83xdg9cbbbkbjzwu5k9hhc";
+			//$url = 'http://bbc.api.mashery.com/juicer-ld-api/articles.json?binding=url&limit=5&where=' . urlencode('?url cwork:tag <'.$value.'>.?url cwork:primaryFormat cwork:VideoFormat. ?url bbc:product bbc:NewsWeb.&api_key=pe83xdg9cbbbkbjzwu5k9hhc');
 
 			$data = @file_get_contents($url, false);
 
