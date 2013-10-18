@@ -15,20 +15,17 @@
 </script>
 </head>
 <body id="newshack" class="news">
-  <h1 class="masthead">BBC News - Visual Journalism</h1>
+  <h1 class="masthead"></h1>
 	<div id="main-wrapper">
-		<h1 class="header">My News View</h1>
-
 		<div id="user-cta">
 			<?php 
       $attributes = array('class' => 'form_input');
 			echo form_open('Welcome/tags', $attributes);
-			echo form_input('username', 'Please Enter your Twitter ID:');
+			echo form_input('username', 'your Twitter ID:');
 			echo (': ');
 			echo form_submit('submit', 'Go');
 			echo form_close();
 			?>
-
 		</div>
 
 	</div>
@@ -57,7 +54,7 @@
     }
     ?>
 
-<!--
+<div id="container" class="photos clearfix">
       <div class="photo">
         <a href="http://www.flickr.com/photos/nemoorange/5013039951/" title="Stanley by Dave DeSandro, on Flickr"><img src="http://farm5.static.flickr.com/4113/5013039951_3a47ccd509.jpg" alt="Stanley" />
         <div class="wrapper" >            
@@ -291,7 +288,7 @@
       </div>
   
   </div> 
-    -->
+    
 <script type="text/javascript" src="http://localhost:8888/newshack/www/js/main.js"></script>
 </section> <!-- #content -->
   
