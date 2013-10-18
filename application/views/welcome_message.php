@@ -45,7 +45,7 @@
             echo '<div class="wrapper">';
               echo '<span class="headline">' . $story['headline'] . '</span>';
               foreach($story['tweets'] as $tweetID) {
-                echo '<span class="tweet">' . $story['tweet'] . '</span>';
+                echo '<span class="tweet">' . $tweetID . '</span>';
               }
         echo '</div></a></div>';
       }

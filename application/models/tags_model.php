@@ -17,6 +17,21 @@ class Tags_model extends CI_Model {
 		return $this->tags;
 	}
 
+	// call this with ajax
+	public function tweet($tweetID) {
+		$this->initialiseTwitter();
+
+		$url = "https://api.twitter.com/1.1/statuses/show.json";
+		$getfield = '?id='.$tweetID;
+		$tweet = $this->twitter->setGetfield($getfield)
+             ->buildOauth($url, "GET")
+             ->performRequest();
+
+        $this->queryCheck($tweet);
+
+        return $tweet;
+	}
+
 	private function initialiseTwitter() {
 
 		require_once APPPATH.'/libraries/TwitterAPIExchange.php';
