@@ -18,6 +18,18 @@ define(['bootstrap', 'lib/isotope', 'lib/appear'], function (news, isotope, appe
             });
         });
 
+        news.$('.tweets').each(function () {
+                var id = news.$(this).html();
+                news.$.ajax({
+                  url: 'http://localhost:8888/newshack/application/controllers/ajax.php',
+                  data: id,
+                  sucess : function () {
+                     console.log(this);
+                  }
+                });
+            }
+        );
+
  
 
         news.$('.header').click(function (e) { news.$('#user-cta').toggleClass('open'); news.$(this).toggleClass('open'); });

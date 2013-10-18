@@ -36,7 +36,6 @@
     
     if (env !== 'dev') {
         config.paths['js'] = baseUrl + '/newshack/www/js/compiled/desktop';
-        console.log(config.paths['js']);
     }
     
     require(config, [(env !== 'dev') ? 'js/ns_all' : 'js/app'], function () {
