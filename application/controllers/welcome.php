@@ -2,6 +2,8 @@
 
 class Welcome extends CI_Controller {
 
+	private $news;
+
 	/**
 	 * Index Page for this controller.
 	 *
@@ -18,16 +20,38 @@ class Welcome extends CI_Controller {
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
 	public function index() {
-		//$this->get_followers();
+		/*
+			$news needs to have the following JSON format:
+
+			news = array(
+				array(
+					"headline" => "headline",
+					"img" => "img",
+					"url" => "url",
+					"tweets" => array(1,2,3,4),
+				),
+				array(
+					"headline" => "headline",
+					"img" => "img",
+					"url" => "url",
+					"tweets" => array(1,2,3,4),
+				)
+			);
+		*/
+		if(isset($this->news)) {
+			$_POST["news"] = $this->news;
+		}
 		$this->load->view('welcome_message');
-		debug("hi");
 	}
 
 	public function news() {
+		// get search terms based on who user follows
 		$this->load->model("tags_model");
 		$tags = $this->tags_model->tags($this->input->post('username'));
-		var_dump($tags);
-		die("end");
+		// convert search terms to news articles
+		//$this->news = $this->juicer_model->convert($tags);
+		// display results
+		$this->index();
 	}
 }
 

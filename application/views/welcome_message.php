@@ -23,7 +23,7 @@
 			<p class="cta">Please Enter your Twitter ID:</p>
 
 			<?php 
-			echo form_open('Welcome/tags');
+			echo form_open('Welcome/news');
 			echo form_input('username', 'Username');
 			echo (': ');
 			echo form_submit('submit', 'Go');
@@ -36,10 +36,33 @@
 
   <section id="content">
 
-  <div id="container" class="photos clearfix">
+
+    <?php
+    if(isset($_POST['news'])) {
+
+      echo '<div id="container" class="photos clearfix">';
+
+      $news = json_decode($_POST['news'], true);
+      foreach($news as $story) {
+        echo '<div class="photo">';
+          echo '<a href="' . $story['url'] . '" title="' . $story['headline'] . '"><img src="' . $story['img'] . '" alt="' . $story['headline'] . '" />';
+            echo '<div class="wrapper">';
+              echo '<span class="headline">' . $story['headline'] . '</span>';
+              foreach($story['tweets'] as $tweetID) {
+                echo '<span class="tweet">' . $story['tweet'] . '</span>';
+              }
+        echo '</div></a></div>';
+      }
+
+      echo '</div>';
+    }
+    ?>
+
+<!--
       <div class="photo">
         <a href="http://www.flickr.com/photos/nemoorange/5013039951/" title="Stanley by Dave DeSandro, on Flickr"><img src="http://farm5.static.flickr.com/4113/5013039951_3a47ccd509.jpg" alt="Stanley" />
-        <div class="wrapper" >            <span class="headline">Headline</span>
+        <div class="wrapper" >            
+            <span class="headline">Headline</span>
             <span class="tweet">tweet</span>
             <span class="tweet">tweet</span></div>
         </a>
@@ -162,9 +185,9 @@
             <span class="tweet">tweet</span>
           </div></a>
       </div>
-    
   
   </div> 
+    -->
 <script type="text/javascript" src="http://localhost:8888/newshack/www/js/main.js"></script>
 </section> <!-- #content -->
   
