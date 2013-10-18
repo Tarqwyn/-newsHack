@@ -50,6 +50,7 @@
                 echo '<span class="tweets">';
                 foreach($story['tweets'] as $tweetID) {
                   echo '<p class="tweet">' . $tweetID . '</p>';
+                  break;
                 }
           echo '</span></div></a></div>';
         }

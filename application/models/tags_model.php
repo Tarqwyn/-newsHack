@@ -134,7 +134,7 @@ class Tags_model extends CI_Model {
 						// sanitize the tag
 						$sanitized = $this->sanitizer_model->sanitize($hashtag);
 						// add to array
-						$this->add_tag($sanitized, $tweetID);
+						$this->add_tag($sanitized, $tweetStatus);
 					}
 				}
 			}
