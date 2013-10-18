@@ -24,9 +24,11 @@ class Welcome extends CI_Controller {
 	}
 
 	public function news() {
-		$this->load->model("tags_model");
-		$tags = $this->tags_model->tags($this->input->post('username'));
-		var_dump($tags);
+		//$this->load->model("tags_model");
+		$this->load->model("juicer_model");
+		$this->juicer_model->validate_hash_tag();
+		//$tags = $this->tags_model->tags($this->input->post('username'));
+		//var_dump($tags);
 		die("end");
 	}
 }
