@@ -9,13 +9,16 @@ define(['bootstrap', 'lib/isotope', 'lib/appear'], function (news, isotope, appe
             });
             news.$('.photo').appear({force_process: true});
         });
-        var container = news.$('#container');
+
+        var container = news.$('#content');
 
         container.imagesLoaded(function () {
             container.isotope({
                 itemSelector : '.photo'
             });
         });
+
+ 
 
         news.$('.header').click(function (e) { news.$('#user-cta').toggleClass('open'); news.$(this).toggleClass('open'); });
 
