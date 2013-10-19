@@ -40,7 +40,7 @@
 
       $news = json_decode($_POST['news'], true);
 
-      for($i = 0; $i < 3; $i++) {
+      for($i = 0; $i < 10; $i++) {
 
         foreach($news as $story) {
           echo '<div class="photo">';
@@ -53,6 +53,12 @@
                   break;
                 }
           echo '</span></div></a></div>';
+
+          // randomize
+          if(rand(0, 100) > 70) {
+            break;
+          }
+
         }
       }
 
